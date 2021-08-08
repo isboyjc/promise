@@ -1,8 +1,8 @@
 /*
  * @Author: isboyjc
  * @Date: 2020-02-02 12:55:53
- * @LastEditors  : isboyjc
- * @LastEditTime : 2020-02-07 00:05:52
+ * @LastEditors: isboyjc
+ * @LastEditTime: 2021-08-08 22:56:45
  * @Description: Promise实现  符合Promises/A+标准
  */
 
@@ -69,8 +69,8 @@ Promise.prototype.then = function(onFulfilled, onRejected) {
     if (this.state === "pending") {
       // 将成功回调push入成功队列
       this.onResolvedCallbacks.push(() => {
-        // 使用setTimeout模拟then异步
-        setTimeout(() => {
+        // 使用queueMicrotask实现微任务
+        queueMicrotask(() => {
           try {
             let x = onFulfilled(this.value)
             // 处理返回值
@@ -78,13 +78,13 @@ Promise.prototype.then = function(onFulfilled, onRejected) {
           } catch (e) {
             reject(e)
           }
-        }, 0)
+        })
       })
 
       // 将失败回调push入失败队列
       this.onRejectedCallbacks.push(() => {
-        // 使用setTimeout模拟then异步
-        setTimeout(() => {
+        // 使用queueMicrotask实现微任务
+        queueMicrotask(() => {
           try {
             let x = onRejected(this.reason)
             // 处理返回值
@@ -92,12 +92,12 @@ Promise.prototype.then = function(onFulfilled, onRejected) {
           } catch (e) {
             reject(e)
           }
-        }, 0)
+        })
       })
     }
     if (this.state === "resolved") {
-      // 使用setTimeout模拟then异步
-      setTimeout(() => {
+      // 使用queueMicrotask实现微任务
+      queueMicrotask(() => {
         try {
           let x = onFulfilled(this.value)
           // 处理返回值
@@ -105,11 +105,11 @@ Promise.prototype.then = function(onFulfilled, onRejected) {
         } catch (e) {
           reject(e)
         }
-      }, 0)
+      })
     }
     if (this.state === "rejected") {
-      // 使用setTimeout模拟then异步
-      setTimeout(() => {
+      // 使用queueMicrotask实现微任务
+      queueMicrotask(() => {
         try {
           let x = onRejected(this.reason)
           // 处理返回值
@@ -117,7 +117,7 @@ Promise.prototype.then = function(onFulfilled, onRejected) {
         } catch (e) {
           reject(e)
         }
-      }, 0)
+      })
     }
   })
   return promise2
